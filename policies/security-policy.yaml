@@ -53,6 +53,9 @@ agent_constraints:
   - Do not exfiltrate repository contents to unapproved endpoints.
   - Do not create fake LLM providers or simulate agent runtimes in this repo.
   - Do not request or store real API keys in tracked files.
+  - Do not enable Cursor Cloud Agents environment setup for this repository.
+  - Do not trigger `@cursor` on GitHub issues or PRs unless explicitly requested by a maintainer.
+  - Prefer local IDE agents over cloud agent automation on this reference repo.
   - Prefer validation scripts over ad-hoc checks.
   - Report security findings through security-reviewer subagent or manifest.
 

@@ -37,7 +37,7 @@ This repository encodes those layers as copyable patterns.
 | **Codex** | `.agents/skills/*/SKILL.md`, `agents/manifests/`, `AGENTS.md` |
 | **GitHub Copilot** | `.github/copilot-instructions.md`, `.github/instructions/*.instructions.md` |
 | **Claude Code** | `CLAUDE.md`, `.claude/agents/*.md` |
-| **Cursor** | `AGENTS.md`, `.cursor/rules/`, policies, validation scripts, optional MCP demo |
+| **Cursor** | `AGENTS.md`, optional `.cursor/rules/` (local IDE), policies, validation scripts |
 
 ## How real coding agents use this repository
 
@@ -46,7 +46,7 @@ This repository is designed to be consumed by real AI coding agents and IDE assi
 - **Codex** reads `AGENTS.md` and reusable skills under `.agents/skills/`.
 - **GitHub Copilot** uses `.github/copilot-instructions.md` and path-specific instructions under `.github/instructions/`.
 - **Claude Code** uses `CLAUDE.md` and specialized subagents under `.claude/agents/`.
-- **Cursor** can use project rules under `.cursor/rules/`.
+- **Cursor** can use optional project rules under `.cursor/rules/` (local IDE only; not Cloud Agents)
 
 The repository does not provide a fake LLM runtime. Instead, it defines the instruction, policy, schema, validation and safety layers that make real coding agents more consistent and governable.
 

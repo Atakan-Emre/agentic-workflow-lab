@@ -9,7 +9,7 @@ description = "Reference repository for AI-coding-agent-ready software projects.
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
-authors = [{ name = "Agentic Workflow Lab Contributors" }]
+authors = [{ name = "Atakan Emre", email = "satakanemre@gmail.com" }]
 dependencies = [
     "pyyaml>=6.0",
     "jsonschema>=4.0",

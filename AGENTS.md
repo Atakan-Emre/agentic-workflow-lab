@@ -9,6 +9,10 @@ Shared operating contract for AI coding agents working in **agentic-workflow-lab
 
 This is a reference repository demonstrating repo-level agentic governance: instructions, manifests, policies, validation, and read-only tool layers. Do not add fake LLM providers, simulated agent runtimes, or external API integrations.
 
+## Cursor Cloud Agents
+
+This repository is a **local governance template**. Do **not** connect it to Cursor Cloud Agents environment setup, and do **not** trigger `@cursor` on GitHub issues or PRs by default. Contributors should use their own local IDE agents; this repo only supplies instructions and policies.
+
 ## Setup commands
 
 ```powershell

@@ -4,7 +4,7 @@ globs:
   - "**/*.py"
   - "**/*.yaml"
   - "**/*.md"
-alwaysApply: true
+alwaysApply: false
 ---
 
 # Agentic Architecture Rules
