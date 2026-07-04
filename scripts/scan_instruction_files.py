@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import sys
-from pathlib import Path
 
 from scripts._utils import (
+    GOVERNANCE_VALIDATION_COMMANDS,
     REPO_ROOT,
+    extract_markdown_section,
+    load_known_policy_tools,
     parse_markdown_frontmatter,
     required_sections_present,
     scan_text_for_risks,
@@ -27,6 +29,7 @@ def validate_claude_subagents() -> tuple[list[str], list[str]]:
         "## Quality checklist",
         "## Handoff rules",
     ]
+    known_policy_tools = load_known_policy_tools()
 
     for path in sorted(agents_dir.glob("*.md")):
         content = path.read_text(encoding="utf-8")
@@ -42,7 +45,14 @@ def validate_claude_subagents() -> tuple[list[str], list[str]]:
         if missing_sections:
             errors.append(f"{path.name}: missing sections: {missing_sections}")
 
-        warnings.extend(scan_text_for_risks(content, str(path.relative_to(REPO_ROOT))))
+        rel_path = str(path.relative_to(REPO_ROOT))
+        for tool in frontmatter.get("tools", []):
+            if isinstance(tool, str) and tool not in known_policy_tools:
+                warnings.append(
+                    f"{rel_path}: tool '{tool}' is not declared in tool-policy.yaml"
+                )
+
+        warnings.extend(scan_text_for_risks(content, rel_path))
 
     return errors, warnings
 
@@ -76,6 +86,15 @@ def validate_skills() -> tuple[list[str], list[str]]:
         missing_sections = required_sections_present(body, required_body_sections)
         if missing_sections:
             errors.append(f"{skill_path}: missing sections: {missing_sections}")
+
+        validation_section = extract_markdown_section(body, "Validation command")
+        if validation_section and not any(
+            cmd in validation_section for cmd in GOVERNANCE_VALIDATION_COMMANDS
+        ):
+            warnings.append(
+                f"{skill_path.relative_to(REPO_ROOT)}: Validation command section "
+                "does not reference a governance/test command"
+            )
 
         warnings.extend(scan_text_for_risks(content, str(skill_path.relative_to(REPO_ROOT))))
 

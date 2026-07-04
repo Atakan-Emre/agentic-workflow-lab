@@ -8,11 +8,15 @@ REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 
 
 def _resolve_safe(relative_path: str) -> Path:
-    candidate = (REPO_ROOT / relative_path).resolve()
-    if not str(candidate).startswith(str(REPO_ROOT.resolve())):
+    root = REPO_ROOT.resolve()
+    candidate = (root / relative_path).resolve()
+
+    if not candidate.is_relative_to(root):
         raise ValueError("Path escapes repository root")
+
     if not candidate.exists():
         raise FileNotFoundError(relative_path)
+
     return candidate
 
 

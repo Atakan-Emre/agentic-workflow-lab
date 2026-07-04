@@ -87,3 +87,33 @@ def required_sections_present(body: str, sections: list[str]) -> list[str]:
         if section not in body:
             missing.append(section)
     return missing
+
+
+def load_known_policy_tools() -> set[str]:
+    data = load_yaml(POLICIES_DIR / "tool-policy.yaml")
+    known: set[str] = set()
+    for rule in data.get("rules", []):
+        known.update(rule.get("tools") or [])
+    known.update(data.get("approval_required_tools", []))
+    return known
+
+
+def extract_markdown_section(body: str, heading: str) -> str:
+    marker = f"## {heading}"
+    start = body.find(marker)
+    if start == -1:
+        return ""
+
+    content_start = start + len(marker)
+    next_heading = body.find("\n## ", content_start)
+    if next_heading == -1:
+        return body[content_start:].strip()
+    return body[content_start:next_heading].strip()
+
+
+GOVERNANCE_VALIDATION_COMMANDS = (
+    "python scripts/validate_agentic_repo.py",
+    "pytest -q",
+    "agentic-lab-validate",
+    "ruff check .",
+)

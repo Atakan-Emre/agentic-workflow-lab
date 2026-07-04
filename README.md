@@ -147,6 +147,8 @@ The validation layer enforces the repository governance model.
 * [`tests/`](tests/) — pytest coverage for policies, instructions, manifests, and validators
 * [`.github/workflows/ci.yml`](.github/workflows/ci.yml) — CI enforcement on pull requests and pushes to `main`
 
+The validation layer also performs lightweight cross-reference checks between manifests, policies, instruction files, and skills.
+
 Validation runs both locally and in CI.
 
 ---
@@ -168,7 +170,7 @@ See [mcp/README.md](mcp/README.md).
 ## Quickstart
 
 ```powershell
-git clone <your-fork-url> agentic-workflow-lab
+git clone https://github.com/Atakan-Emre/agentic-workflow-lab.git
 cd agentic-workflow-lab
 
 python -m venv .venv
