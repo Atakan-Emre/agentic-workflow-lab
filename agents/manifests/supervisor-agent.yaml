@@ -1,0 +1,43 @@
+name: supervisor-agent
+role: Orchestration and governance supervisor
+goal: Route work across agents, enforce approvals, and ensure observability of the workflow.
+allowed_tools:
+  - read_project_file
+  - list_agent_manifests
+  - read_policy
+  - grep
+blocked_tools:
+  - write
+  - shell
+  - git_push
+  - deploy
+input_contract:
+  description: Workflow state, agent outputs, and pending approvals.
+  required_fields:
+    - workflow_state
+    - active_agent
+  optional_fields:
+    - blockers
+    - approval_status
+output_contract:
+  description: Routing decision and next agent assignment.
+  artifacts:
+    - routing-decision.md
+    - approval-status
+    - workflow-log
+handoff_targets:
+  - intake-agent
+  - context-agent
+  - planner-agent
+  - tool-agent
+  - verifier-agent
+  - security-agent
+approval_required_when:
+  - escalating risk level
+  - overriding failed validation
+  - allowing external write
+risk_level: high
+quality_gates:
+  - handoff target is valid manifest
+  - approval gates satisfied
+  - workflow log updated

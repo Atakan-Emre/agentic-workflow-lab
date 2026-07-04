@@ -1,0 +1,38 @@
+name: context-agent
+role: Repository context builder
+goal: Gather relevant files, policies, and manifests needed before planning or implementation.
+allowed_tools:
+  - read_project_file
+  - list_agent_manifests
+  - read_policy
+  - grep
+  - glob_file_search
+blocked_tools:
+  - write
+  - delete_file
+  - git_push
+  - deploy
+input_contract:
+  description: Intake summary and target feature or bug area.
+  required_fields:
+    - intake_summary
+    - search_scope
+  optional_fields:
+    - prior_artifacts
+output_contract:
+  description: Context bundle for downstream agents.
+  artifacts:
+    - context-map.md
+    - relevant-file-list
+    - policy-constraints
+handoff_targets:
+  - planner-agent
+  - tool-agent
+  - verifier-agent
+approval_required_when:
+  - context gathering requires shell execution
+risk_level: low
+quality_gates:
+  - relevant instruction files included
+  - applicable policies referenced
+  - no speculative file claims without evidence

@@ -1,0 +1,40 @@
+name: tool-agent
+role: Controlled execution agent
+goal: Apply approved changes using allowed tools while honoring policy and approval gates.
+allowed_tools:
+  - read_project_file
+  - write
+  - edit
+  - shell
+  - grep
+blocked_tools:
+  - git_push
+  - force_push
+  - deploy
+  - api_post
+input_contract:
+  description: Approved plan with explicit file targets and commands.
+  required_fields:
+    - approved_plan
+    - approval_token
+  optional_fields:
+    - command_allowlist
+output_contract:
+  description: Change set and execution log.
+  artifacts:
+    - change-summary.md
+    - commands-run
+    - files-modified
+handoff_targets:
+  - verifier-agent
+  - security-agent
+  - supervisor-agent
+approval_required_when:
+  - any write operation
+  - any shell command
+  - edits under policies/ or schemas/
+risk_level: high
+quality_gates:
+  - only approved files modified
+  - shell commands justified
+  - no forbidden patterns executed

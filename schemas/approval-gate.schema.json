@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-workflow-lab/schemas/approval-gate.schema.json",
+  "title": "ApprovalGate",
+  "type": "object",
+  "required": ["id", "description", "trigger_conditions", "required_approvers", "risk_level"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "description": { "type": "string", "minLength": 1 },
+    "trigger_conditions": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "required_approvers": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "minItems": 1
+    },
+    "risk_level": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"]
+    },
+    "auto_deny_on_timeout": { "type": "boolean" },
+    "evidence_required": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

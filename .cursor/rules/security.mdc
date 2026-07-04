@@ -1,0 +1,38 @@
+---
+description: Security rules for agent-ready repository changes
+globs:
+  - "**/*.py"
+  - "**/*.yaml"
+  - "**/*.md"
+alwaysApply: true
+---
+
+# Security Rules
+
+- Never commit secrets, tokens, API keys or credentials.
+- Do not add commands that download and execute remote scripts.
+- Do not enable destructive commands by default.
+- External writes must remain disabled unless explicitly modeled through policy.
+- Shell execution must be justified and documented.
+- Write-capable tools must require approval.
+- Keep MCP demo tools read-only unless a policy and validation test are added.
+
+## Forbidden patterns
+
+- `git push --force`
+- `git reset --hard`
+- `curl ... | bash` / `wget ... | sh`
+- `Invoke-Expression` on remote content
+- Committing `.env`, keys, or credential files
+
+## Sensitive paths
+
+Extra care required when editing:
+
+- `policies/`
+- `schemas/`
+- `.github/workflows/`
+- `scripts/validate_*.py`
+- `mcp/server.py`
+
+Review against `policies/security-policy.yaml` and `policies/tool-policy.yaml`.

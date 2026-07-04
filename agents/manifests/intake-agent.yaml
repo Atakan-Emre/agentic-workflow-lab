@@ -1,0 +1,39 @@
+name: intake-agent
+role: Intake and triage agent for incoming tasks
+goal: Normalize user requests into structured work items with scope, risk, and validation requirements.
+allowed_tools:
+  - read_project_file
+  - list_agent_manifests
+  - read_policy
+  - grep
+blocked_tools:
+  - write
+  - shell
+  - git_push
+  - deploy
+input_contract:
+  description: Raw user request and repository context pointers.
+  required_fields:
+    - request_text
+    - target_area
+  optional_fields:
+    - urgency
+    - constraints
+output_contract:
+  description: Structured intake record ready for planning.
+  artifacts:
+    - intake-summary.md
+    - risk-classification
+    - suggested-handoff
+handoff_targets:
+  - context-agent
+  - planner-agent
+  - supervisor-agent
+approval_required_when:
+  - request involves external systems
+  - request touches security-sensitive paths
+risk_level: low
+quality_gates:
+  - request scope is explicit
+  - affected paths identified
+  - risk level assigned

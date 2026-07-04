@@ -1,0 +1,43 @@
+---
+description: Agentic architecture rules for this repository
+globs:
+  - "**/*.py"
+  - "**/*.yaml"
+  - "**/*.md"
+alwaysApply: true
+---
+
+# Agentic Architecture Rules
+
+This repository does not simulate an agent.
+
+It prepares the repository so real coding agents can work safely and consistently.
+
+## Core principles
+
+- Treat agent behavior as contracts, not free-form prompts.
+- Keep instructions, policies, schemas and validation scripts aligned.
+- Do not add fake LLM providers.
+- Do not add real external API calls without an explicit policy and approval model.
+- Prefer read-only examples.
+- Any write-capable behavior must be approval-gated.
+- Update tests when changing manifests, policies, schemas or validation scripts.
+
+## Layer boundaries
+
+| Layer | Location |
+| --- | --- |
+| Instruction | `AGENTS.md`, `CLAUDE.md`, `.github/` |
+| Capability | `.claude/agents/`, `.agents/skills/`, `agents/manifests/` |
+| Policy | `policies/`, `schemas/` |
+| Validation | `scripts/`, `tests/` |
+| Tool demo | `mcp/` (read-only v1) |
+
+Do not collapse layers. Policies belong in `policies/`, not ad hoc in scripts or prompts.
+
+## Before finishing substantive changes
+
+```powershell
+python scripts/validate_agentic_repo.py
+pytest -q
+```

@@ -1,0 +1,71 @@
+version: "1.0.0"
+
+description: >
+  Human-in-the-loop approval gates for agent actions that modify state,
+  touch security-sensitive areas, or interact with external systems.
+
+gates:
+  - id: repo-write
+    description: Any repository file write or delete requires explicit approval.
+    trigger_conditions:
+      - tool modifies tracked files
+      - tool creates new source files
+      - tool deletes files
+    required_approvers:
+      - repository-owner
+      - coding-agent-operator
+    risk_level: medium
+    auto_deny_on_timeout: true
+    evidence_required:
+      - change summary
+      - affected file list
+
+  - id: external-write
+    description: External API writes, deployments, and publishes require approval.
+    trigger_conditions:
+      - external API mutation
+      - deployment to staging or production
+      - package publish
+    required_approvers:
+      - repository-owner
+      - security-reviewer
+    risk_level: high
+    auto_deny_on_timeout: true
+    evidence_required:
+      - target environment
+      - rollback plan
+
+  - id: shell-execution
+    description: Shell commands must be justified; high-risk commands need approval.
+    trigger_conditions:
+      - shell command modifies system state
+      - shell command accesses network
+      - shell command not in allowlist
+    required_approvers:
+      - coding-agent-operator
+    risk_level: medium
+    auto_deny_on_timeout: true
+    evidence_required:
+      - command justification
+      - expected outcome
+
+  - id: security-sensitive-change
+    description: Changes to policies, auth, secrets handling, or CI require approval.
+    trigger_conditions:
+      - edits under policies/
+      - edits under schemas/
+      - edits to CI workflows
+      - changes to secret handling documentation
+    required_approvers:
+      - security-reviewer
+      - repository-owner
+    risk_level: critical
+    auto_deny_on_timeout: true
+    evidence_required:
+      - threat model note
+      - validation output
+
+defaults:
+  deny_by_default: true
+  allow_read_only_without_approval: true
+  log_all_approval_decisions: true

@@ -1,0 +1,62 @@
+version: "1.0.0"
+
+description: >
+  Repository-level security rules for AI coding agents operating in this workspace.
+
+principles:
+  - least_privilege
+  - no_secrets_in_repo
+  - read_before_write
+  - validate_before_merge
+  - human_approval_for_high_risk
+
+secrets:
+  never_commit:
+    - .env
+    - credentials.json
+    - "*.pem"
+    - "*.key"
+    - id_rsa
+  never_print:
+    - api keys
+    - tokens
+    - passwords
+    - private keys
+  scan_on_commit: true
+
+shell:
+  require_justification: true
+  forbidden:
+    - remote script pipe execution
+    - force push to main or master
+    - hard reset
+    - disabling git hooks
+    - modifying git config globally
+  allowed_with_caution:
+    - pip install
+    - pytest
+    - python scripts/validate_agentic_repo.py
+    - git status
+    - git diff
+    - git log
+
+external_access:
+  read_only_default: true
+  write_requires_approval: true
+  forbidden_without_approval:
+    - deploy
+    - publish package
+    - mutate production data
+    - send authenticated API requests
+
+agent_constraints:
+  - Do not exfiltrate repository contents to unapproved endpoints.
+  - Do not create fake LLM providers or simulate agent runtimes in this repo.
+  - Do not request or store real API keys in tracked files.
+  - Prefer validation scripts over ad-hoc checks.
+  - Report security findings through security-reviewer subagent or manifest.
+
+incident_response:
+  - Stop work on suspected secret exposure.
+  - Rotate affected credentials out of band.
+  - Document incident in security review notes (not in committed secrets).

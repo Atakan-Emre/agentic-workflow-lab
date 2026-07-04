@@ -1,0 +1,40 @@
+name: planner-agent
+role: Implementation planner
+goal: Produce a minimal, validated plan with architecture boundaries and test strategy.
+allowed_tools:
+  - read_project_file
+  - list_agent_manifests
+  - read_policy
+  - grep
+blocked_tools:
+  - write
+  - shell
+  - git_commit
+  - deploy
+input_contract:
+  description: Context bundle and normalized intake record.
+  required_fields:
+    - context_map
+    - goal
+  optional_fields:
+    - constraints
+    - acceptance_criteria
+output_contract:
+  description: Actionable plan with explicit validation steps.
+  artifacts:
+    - plan.md
+    - file-change-list
+    - test-plan
+handoff_targets:
+  - tool-agent
+  - docs-writer
+  - supervisor-agent
+approval_required_when:
+  - plan includes security-sensitive changes
+  - plan requires external writes
+  - plan spans more than five files
+risk_level: medium
+quality_gates:
+  - architecture boundaries respected
+  - validation commands listed
+  - rollback or mitigation noted for risky steps

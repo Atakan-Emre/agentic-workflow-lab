@@ -1,0 +1,82 @@
+version: "1.0.0"
+
+defaults:
+  read_only_allowed: true
+  write_requires_approval: true
+  external_write_allowed: false
+  shell_execution_requires_justification: true
+
+rules:
+  - id: allow-read-only-inspection
+    description: Read-only project inspection tools are allowed by default.
+    effect: allow
+    tools:
+      - read_project_file
+      - list_agent_manifests
+      - read_policy
+      - grep
+      - glob_file_search
+
+  - id: require-approval-for-writes
+    description: Any tool that modifies repository or external systems requires approval.
+    effect: require_approval
+    tools:
+      - write
+      - edit
+      - delete_file
+      - shell_write
+      - git_push
+      - deploy
+
+  - id: deny-destructive-actions
+    description: Destructive git and filesystem operations are forbidden.
+    effect: deny
+    tools:
+      - git_reset_hard
+      - rm_rf
+      - force_push
+    conditions:
+      - always
+
+  - id: deny-remote-script-execution
+    description: Downloading and executing remote scripts is forbidden.
+    effect: deny
+    conditions:
+      - curl_pipe_bash
+      - wget_pipe_sh
+      - irm_iex
+
+  - id: deny-external-write-default
+    description: External writes are forbidden unless approval policy explicitly allows.
+    effect: deny
+    tools:
+      - api_post
+      - api_put
+      - api_delete
+      - publish_artifact
+    conditions:
+      - external_write_without_approval
+
+approval_required_tools:
+  - write
+  - edit
+  - delete_file
+  - shell
+  - git_commit
+  - git_push
+  - deploy
+  - api_post
+  - api_put
+  - api_delete
+
+forbidden_patterns:
+  - "git push --force"
+  - "git reset --hard"
+  - "rm -rf /"
+  - "curl .*\\|.*bash"
+  - "wget .*\\|.*sh"
+  - "Invoke-Expression"
+  - "iex \\("
+  - "password\\s*="
+  - "api[_-]?key\\s*="
+  - "secret\\s*="

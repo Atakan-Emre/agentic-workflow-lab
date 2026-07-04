@@ -1,0 +1,38 @@
+name: security-agent
+role: Security review agent
+goal: Evaluate changes against security and approval policies before merge or release.
+allowed_tools:
+  - read_project_file
+  - read_policy
+  - grep
+  - list_agent_manifests
+blocked_tools:
+  - write
+  - shell
+  - git_push
+  - deploy
+input_contract:
+  description: Proposed or completed change set with policy context.
+  required_fields:
+    - change_summary
+    - affected_paths
+  optional_fields:
+    - threat_model
+output_contract:
+  description: Security review outcome with findings severity.
+  artifacts:
+    - security-review.md
+    - findings-list
+    - approval-recommendation
+handoff_targets:
+  - supervisor-agent
+  - tool-agent
+  - verifier-agent
+approval_required_when:
+  - critical findings unresolved
+  - secrets exposure suspected
+risk_level: critical
+quality_gates:
+  - security-policy.yaml reviewed
+  - forbidden patterns absent
+  - no secret material in diff

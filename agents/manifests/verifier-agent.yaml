@@ -1,0 +1,36 @@
+name: verifier-agent
+role: Validation and quality gate agent
+goal: Run repository validation scripts and confirm acceptance criteria before handoff.
+allowed_tools:
+  - read_project_file
+  - shell
+  - grep
+blocked_tools:
+  - write
+  - delete_file
+  - git_push
+  - deploy
+input_contract:
+  description: Change summary and expected validation commands.
+  required_fields:
+    - change_summary
+    - validation_commands
+  optional_fields:
+    - acceptance_criteria
+output_contract:
+  description: Validation report aligned with validation-result schema.
+  artifacts:
+    - validation-report.json
+    - failing-checks
+    - remediation-notes
+handoff_targets:
+  - supervisor-agent
+  - tool-agent
+  - docs-writer
+approval_required_when:
+  - validation requires modifying test fixtures
+risk_level: medium
+quality_gates:
+  - validate_agentic_repo.py passes
+  - pytest passes when applicable
+  - all acceptance criteria mapped to checks
